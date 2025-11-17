@@ -19,6 +19,53 @@
 
 ---
 
+## 📌 Informations Générales
+
+### Étudiant(e)
+
+- **Nom & Prénom** : Mohammed EL BADRY
+- **Filière** : II-BDCC
+- **Année Universitaire** : 2025-2026
+- **Professeur** : Pr. Mohamed YOUSSFI
+
+---
+
+## 📖 Table des Matières
+
+1. [Introduction](#1-introduction)
+2. [Architecture Technique](#2-architecture-technique)
+3. [Technologies Utilisées](#3-technologies-utilisées)
+4. [Micro-services Développés](#4-micro-services-développés)
+5. [Sécurité](#5-sécurité)
+6. [Clients (Web & Mobile)](#6-clients)
+7. [DevOps & Déploiement](#7-devops)
+8. [Tests & Démonstrations](#8-tests)
+9. [Difficultés Rencontrées](#9-difficultés)
+10. [Conclusion](#10-conclusion)
+
+---
+
+## 1. Introduction
+
+### 1.1 Contexte du Projet
+
+Ce projet consiste à développer un système distribué basé sur une architecture microservices pour la gestion des cotations boursières des entreprises cotées en bourse. Le système permet de gérer les informations des entreprises, leurs cotations, et offre une interface conversationnelle via un chatbot AI.
+
+### 1.2 Objectifs
+
+- Concevoir une architecture microservices robuste
+- Implémenter la communication inter-services
+- Assurer la sécurité avec OAuth2/OpenID Connect
+- Développer des clients Web et Mobile
+- Mettre en place un pipeline DevOps
+
+### 1.3 Périmètre Fonctionnel
+
+- Gestion des entreprises cotées en bourse
+- Gestion des cotations boursières
+- Chatbot AI avec MCP pour Telegram
+- Interfaces utilisateur Web et Mobile
+
 ## Core Features
 
 - Secure Authentication System with OAuth2
@@ -28,320 +75,279 @@
 - Role-Based Access Control
 - RESTful API Documentation with Swagger/OpenAPI
 
-## Technology Stack
+---
 
-### Backend Stack
+**Périmètre fonctionnel**
 
-```yaml
-Runtime: Java 21
-Framework: Spring Boot 3.4.5
-Security: Spring Security + OAuth2 Resource Server
-Database: MySQL / H2
-ORM: Spring Data JPA
-Documentation: SpringDoc OpenAPI 2.1.0
-Build: Maven
-```
+Company-Service: CRUD Entreprises (id, name, listingDate, currentStockPrice, sector).
+Stock-Service: CRUD Cotations (id, date, open/high/low/close, volume, companyId) + mise à jour du prix courant de l’entreprise via la dernière closeValue.
+Chatbot-Service: Outils MCP exposant les opérations Company/Stock pour un agent AI.
+Services techniques: Discovery (Eureka) et Gateway (Spring Cloud Gateway)
 
-### Key Dependencies
 
-```yaml
-Spring Boot Starter:
-  - Web
-  - Data JPA
-  - DevTools
-  - OAuth2 Resource Server
-  - Security Test
-Database:
-  - MySQL Connector
-  - H2 Database
-Tools:
-  - Lombok
-  - SpringDoc OpenAPI
-```
+### Points d'accès par service
+
+| Service             | URL                                      | Port   | Description                       |
+|---------------------|------------------------------------------|--------|-----------------------------------|
+| Discovery (Eureka)  | http://localhost:8761                    | 8761   | Tableau de bord Eureka            |
+| Gateway             | http://localhost:8888                    | 8888   | API Gateway (routes REST)         |
+| Company-Service     | http://localhost:8081/api/companies      | 8081   | API Entreprises (CRUD)            |
+| Stock-Service       | http://localhost:8082/api/stocks         | 8082   | API Cotations (CRUD + Feign)      |
+| Chatbot-Service     | http://localhost:8090/mcp                | 8090   | API MCP Chatbot (Spring AI)       |
+| Keycloak (optionnel)| http://localhost:8080                    | 8080   | Console d'administration Keycloak |
+| H2 Console (Company)| http://localhost:8081/h2-console         | 8081   | Console H2 Company-Service        |
+| H2 Console (Stock)  | http://localhost:8082/h2-console         | 8082   | Console H2 Stock-Service          |
+| API Docs (Company)  | http://localhost:8081/swagger-ui.html    | 8081   | Documentation OpenAPI Company     |
+| API Docs (Stock)    | http://localhost:8082/swagger-ui.html    | 8082   | Documentation OpenAPI Stock       |
 
 ---
 
-## Quick Start Guide
-
-### Prerequisites
-
-- Java 21
-- Maven 3.6+
-- MySQL (optional, H2 is included for development)
-
-### Setup
-
-```bash
-# Clone & Navigate
-git clone https://github.com/yourusername/digital-banking-jee.git
-cd digital-banking-jee
-
-# Run the application
-mvn spring-boot:run
-```
-
-### Access Points
-
-| Service     | URL                                   | Purpose          |
-| ----------- | ------------------------------------- | ---------------- |
-| Application | http://localhost:8080                 | Main Application |
-| H2 Console  | http://localhost:8080/h2-console      | Database Admin   |
-| API Docs    | http://localhost:8080/swagger-ui.html | Interactive API  |
-
----
 
 ## Project Structure
 
+### Structure du projet global
+
 ```
-src/main/java/ma/enset/digitalbanking/
-├── config/          # Configuration classes
-├── dtos/           # Data Transfer Objects
-├── entities/       # Domain entities
-├── enums/          # Enumeration types
-├── exceptions/     # Custom exceptions
-├── mappers/        # Object mappers
-├── repositories/   # Data access layer
-├── security/       # Security configuration
-├── services/       # Business logic
-└── web/           # REST controllers
-```
-
-## API Documentation
-
-### Core Endpoints
-
-#### Authentication APIs
-
-```http
-POST   /api/auth/login     # User authentication
-POST   /api/auth/logout    # Session termination
-GET    /api/auth/profile   # User profile data
-```
-
-#### Customer Management APIs
-
-```http
-GET    /api/customers              # List all customers
-POST   /api/customers              # Create new customer
-GET    /api/customers/{id}         # Get customer details
-PUT    /api/customers/{id}         # Update customer
-DELETE /api/customers/{id}         # Remove customer
-```
-
-#### Account Management APIs
-
-```http
-GET    /api/accounts               # List all accounts
-POST   /api/accounts               # Create new account
-GET    /api/accounts/{id}          # Account details
-PUT    /api/accounts/{id}          # Update account
-DELETE /api/accounts/{id}          # Close account
-```
-
-#### Transaction APIs
-
-```http
-POST   /api/operations/debit       # Debit transaction
-POST   /api/operations/credit      # Credit transaction
-POST   /api/operations/transfer    # Transfer funds
-GET    /api/operations/{id}        # Transaction details
-GET    /api/operations/history     # Transaction history
+enset-adria-stock-market-test/
+├── discovery-service/      # Eureka Service Discovery
+├── gateway-service/        # API Gateway
+├── company-service/        # Microservice Entreprises
+├── stock-service/          # Microservice Cotations
+├── chatbot-service/        # Microservice Chatbot MCP
+├── docker-compose.yml      # Orchestration locale
+├── k8s/                    # Manifests Kubernetes
+├── Jenkinsfile             # Pipeline CI/CD
+├── README.md               # Documentation principale
+└── REPORT.md               # Rapport détaillé
 ```
 
 ---
 
-## Configuration
+### Structure interne d'un microservice (exemple: company-service)
 
-### Environment Variables
-
-```bash
-curl -H "Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6..." http://localhost:8085/customers
+```
+src/main/java/ma/enset/companyservice/
+├── config/          # Configuration classes
+├── dtos/            # Data Transfer Objects
+├── entities/        # Domain entities
+├── enums/           # Enumeration types
+├── exceptions/      # Custom exceptions
+├── mappers/         # Object mappers
+├── repositories/    # Data access layer
+├── security/        # Security configuration
+├── services/        # Business logic
+└── web/             # REST controllers
 ```
 
-## 📦 Dependencies
+---
 
-The project uses the following main dependencies:
+## 3. Technologies Utilisées
 
+### 3.1 Backend
+| Technologie | Version | Usage |
+|------------|---------|-------|
+| Spring Boot | 3.2.x | Framework principal |
+| Spring Cloud | 2023.x | Microservices |
+| Eureka Server | - | Service Discovery |
+| Spring Cloud Gateway | - | API Gateway |
+| OpenFeign | - | Client REST |
+| Resilience4J | - | Fault Tolerance |
+| Keycloak | 23.x | Sécurité OAuth2 |
+| H2/MySQL | - | Base de données |
+| MCP | - | Model Context Protocol |
+
+### 3.2 Frontend
+- **Web** : React 18 / Angular 17
+- **Mobile** : Flutter 3.x
+- **Chatbot** : Telegram Bot API + MCP
+---
+## API Documentation
+
+---
+
+### Company-Service
+
+**Tech Stack:**  
+- Spring Boot, Spring Data JPA, H2/MySQL, Lombok, SpringDoc OpenAPI, Eureka Client, Feign Client
+
+**Dependencies:**
 ```xml
-<!-- Spring Boot Starter Web -->
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-web</artifactId>
 </dependency>
-
-<!-- Spring Boot Starter Data JPA -->
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-data-jpa</artifactId>
 </dependency>
-
-<!-- Spring Boot Starter Security -->
 <dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-security</artifactId>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 </dependency>
-
-<!-- Spring Boot OAuth2 Resource Server -->
 <dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 </dependency>
-
-<!-- H2 Database -->
-<dependency>
-    <groupId>com.h2database</groupId>
-    <artifactId>h2</artifactId>
-    <scope>runtime</scope>
-</dependency>
-
-<!-- MySQL Connector -->
-<dependency>
-    <groupId>com.mysql</groupId>
-    <artifactId>mysql-connector-j</artifactId>
-    <scope>runtime</scope>
-</dependency>
-
-<!-- Lombok -->
 <dependency>
     <groupId>org.projectlombok</groupId>
     <artifactId>lombok</artifactId>
     <optional>true</optional>
 </dependency>
+```
 
-<!-- Spring Boot DevTools -->
-<dependency>****
+**Main Endpoints:**
+```http
+POST   /api/companies
+GET    /api/companies
+GET    /api/companies/{id}
+PUT    /api/companies/{id}/price?value=DOUBLE
+DELETE /api/companies/{id}
+GET    /api/companies/sector/{sector}
+```
+
+---
+
+### Stock-Service
+
+**Tech Stack:**  
+- Spring Boot, Spring Data JPA, H2/MySQL, Lombok, SpringDoc OpenAPI, Eureka Client, Feign Client, Resilience4J
+
+**Dependencies:**
+```xml
+<dependency>
     <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-devtools</artifactId>
-    <scope>runtime</scope>********
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-openfeign</artifactId>
+</dependency>
+<dependency>
+    <groupId>io.github.resilience4j</groupId>
+    <artifactId>resilience4j-spring-boot3</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
     <optional>true</optional>
 </dependency>
 ```
 
-## 📝 API Endpoints
-
-### Authentication
-
-- `POST /auth/login`: Authenticate user and get JWT token
-- `GET /auth/profile`: Get authenticated user profile
-
-### Customers
-
-- `GET /customers`: Get all customers
-- `GET /customers/search?keyword=`: Search customers by name
-- `GET /customers/{id}`: Get customer by ID
-- `POST /customers`: Create new customer
-- `PUT /customers/{id}`: Update customer
-- `DELETE /customers/{id}`: Delete customer
-
-### Accounts
-
-- `GET /accounts`: Get all accounts
-- `GET /accounts/{id}`: Get account by ID
-- `GET /customers/{customerId}/accounts`: Get accounts by customer ID
-- `POST /customers/{customerId}/current-accounts`: Create current account
-- `POST /customers/{customerId}/saving-accounts`: Create saving account
-
-### Operations
-
-- `GET /accounts/{accountId}/operations`: Get operations for account
-- `POST /accounts/debit`: Debit operation
-- `POST /accounts/credit`: Credit operation
-- `POST /accounts/transfer`: Transfer between accounts
-
-### Database Configuration
-
-```yaml
-# application.yml
-spring:
-  datasource:
-    url: jdbc:h2:mem:banking_db
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-  jpa:<****
-    hibernate:
-      ddl-auto: create-drop
-    show-sql: true
+**Main Endpoints:**
+```http
+POST   /api/stocks
+GET    /api/stocks
+GET    /api/stocks/{id}
+DELETE /api/stocks/{id}
+GET    /api/stocks/company/{companyId}
+PUT    /api/stocks/company/{companyId}/update-company-price
 ```
 
-### UML
+---
 
-```mermaid
-classDiagram
-    class Customer {
-        +Long id
-        +String name
-        +String email
-        +List~BankAccount~ bankAccounts
-    }
+### Chatbot-Service (MCP)
 
-    class BankAccount {
-        +String id
-        +double balance
-        +Date createDate
-        +AccountStatus status
-        +Customer customer
-        +List~AccountOperation~ accountOperations
-    }
+**Tech Stack:**  
+- Spring Boot, Spring AI MCP, Eureka Client, Feign Client
 
-    class CurrentAccount {
-        +double overDraft
-    }
-
-    class SavingAccount {
-        +double interestRate
-    }
-
-    class AccountOperation {
-        +Long id
-        +Date operationDate
-        +double amount
-        +OperationType type
-        +BankAccount bankAccount
-        +String description
-    }
-
-    class OperationType {
-        <<enumeration>>
-        CREDIT
-        DEBIT
-    }
-
-    class AccountStatus {
-        <<enumeration>>
-        CREATED
-        ACTIVATED
-        SUSPENDED
-    }
-
-    Customer "1" --o "many" BankAccount
-    BankAccount "1" --o "many" AccountOperation
-    BankAccount <|-- CurrentAccount
-    BankAccount <|-- SavingAccount
-    AccountOperation --> OperationType
-    BankAccount --> AccountStatus
+**Dependencies:**
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-openfeign</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-starter-mcp-server-webmvc</artifactId>
+</dependency>
 ```
 
-### Flux
-
-```mermaid
-sequenceDiagram
-    participant U as Utilisateur
-    participant F as Frontend
-    participant B as Backend
-    participant DB as Database
-
-    U->>F: Saisie login/password
-    F->>F: Validation formulaire
-    F->>B: POST /auth/login
-    B->>DB: Vérification credentials
-    DB-->>B: Utilisateur trouvé
-    B->>B: Génération JWT token
-    B-->>F: Token + rôles
-    F->>F: Stockage token
-    F->>F: Redirection dashboard
-    F->>U: Interface selon rôle
+**Main Endpoints:**
+```http
+POST   /mcp/process
+GET    /mcp/tools
 ```
+
+---
+
+### Gateway-Service
+
+**Tech Stack:**  
+- Spring Boot, Spring Cloud Gateway, Eureka Client, Spring Security (prévu), OpenAPI
+
+**Dependencies:**
+```xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-gateway</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+</dependency>
+```
+
+**Main Flow:**  
+- Routes REST `/api/companies/**` → Company-Service  
+- Routes REST `/api/stocks/**` → Stock-Service  
+- JWT propagation (prévu)
+
+---
+
+### Discovery-Service (Eureka)
+
+**Tech Stack:**  
+- Spring Boot, Eureka Server
+
+**Dependencies:**
+```xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+</dependency>
+```
+
+**Main Endpoint:**  
+- Dashboard: [http://localhost:8761](http://localhost:8761)
+
+---
+
+### Diagramme de classes
+
+![Diagramme de classes](docs/Uml.png)
+
+---
+
+
+
 
 ---
 
@@ -443,17 +449,6 @@ enset-adria-stock-market-test/
 
 ---
 
-## 5. Stack technique
-
-- Java 17, Spring Boot 3.5.x
-- Spring Cloud 2025.x: Eureka Server/Client, Spring Cloud Gateway, OpenFeign, LoadBalancer
-- JPA + H2 (dev)
-- Resilience4J (circuit breaker)
-- Keycloak/OAuth2/OIDC/JWT (prévu)
-- Spring AI MCP Server WebMVC (chatbot-service)
-- Docker, Docker Compose, Jenkins, Kubernetes
-
----
 
 ## 6. Services et API
 
