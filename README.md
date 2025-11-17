@@ -84,24 +84,22 @@ Stock-Service: CRUD Cotations (id, date, open/high/low/close, volume, companyId)
 Chatbot-Service: Outils MCP exposant les opérations Company/Stock pour un agent AI.
 Services techniques: Discovery (Eureka) et Gateway (Spring Cloud Gateway)
 
-
 ### Points d'accès par service
 
-| Service             | URL                                      | Port   | Description                       |
-|---------------------|------------------------------------------|--------|-----------------------------------|
-| Discovery (Eureka)  | http://localhost:8761                    | 8761   | Tableau de bord Eureka            |
-| Gateway             | http://localhost:8888                    | 8888   | API Gateway (routes REST)         |
-| Company-Service     | http://localhost:8081/api/companies      | 8081   | API Entreprises (CRUD)            |
-| Stock-Service       | http://localhost:8082/api/stocks         | 8082   | API Cotations (CRUD + Feign)      |
-| Chatbot-Service     | http://localhost:8090/mcp                | 8090   | API MCP Chatbot (Spring AI)       |
-| Keycloak (optionnel)| http://localhost:8080                    | 8080   | Console d'administration Keycloak |
-| H2 Console (Company)| http://localhost:8081/h2-console         | 8081   | Console H2 Company-Service        |
-| H2 Console (Stock)  | http://localhost:8082/h2-console         | 8082   | Console H2 Stock-Service          |
-| API Docs (Company)  | http://localhost:8081/swagger-ui.html    | 8081   | Documentation OpenAPI Company     |
-| API Docs (Stock)    | http://localhost:8082/swagger-ui.html    | 8082   | Documentation OpenAPI Stock       |
+| Service              | URL                                   | Port | Description                       |
+| -------------------- | ------------------------------------- | ---- | --------------------------------- |
+| Discovery (Eureka)   | http://localhost:8761                 | 8761 | Tableau de bord Eureka            |
+| Gateway              | http://localhost:8888                 | 8888 | API Gateway (routes REST)         |
+| Company-Service      | http://localhost:8081/api/companies   | 8081 | API Entreprises (CRUD)            |
+| Stock-Service        | http://localhost:8082/api/stocks      | 8082 | API Cotations (CRUD + Feign)      |
+| Chatbot-Service      | http://localhost:8090/mcp             | 8090 | API MCP Chatbot (Spring AI)       |
+| Keycloak (optionnel) | http://localhost:8080                 | 8080 | Console d'administration Keycloak |
+| H2 Console (Company) | http://localhost:8081/h2-console      | 8081 | Console H2 Company-Service        |
+| H2 Console (Stock)   | http://localhost:8082/h2-console      | 8082 | Console H2 Stock-Service          |
+| API Docs (Company)   | http://localhost:8081/swagger-ui.html | 8081 | Documentation OpenAPI Company     |
+| API Docs (Stock)     | http://localhost:8082/swagger-ui.html | 8082 | Documentation OpenAPI Stock       |
 
 ---
-
 
 ## Project Structure
 
@@ -144,33 +142,37 @@ src/main/java/ma/enset/companyservice/
 ## 3. Technologies Utilisées
 
 ### 3.1 Backend
-| Technologie | Version | Usage |
-|------------|---------|-------|
-| Spring Boot | 3.2.x | Framework principal |
-| Spring Cloud | 2023.x | Microservices |
-| Eureka Server | - | Service Discovery |
-| Spring Cloud Gateway | - | API Gateway |
-| OpenFeign | - | Client REST |
-| Resilience4J | - | Fault Tolerance |
-| Keycloak | 23.x | Sécurité OAuth2 |
-| H2/MySQL | - | Base de données |
-| MCP | - | Model Context Protocol |
+
+| Technologie          | Version | Usage                  |
+| -------------------- | ------- | ---------------------- |
+| Spring Boot          | 3.2.x   | Framework principal    |
+| Spring Cloud         | 2023.x  | Microservices          |
+| Eureka Server        | -       | Service Discovery      |
+| Spring Cloud Gateway | -       | API Gateway            |
+| OpenFeign            | -       | Client REST            |
+| Resilience4J         | -       | Fault Tolerance        |
+| Keycloak             | 23.x    | Sécurité OAuth2        |
+| H2/MySQL             | -       | Base de données        |
+| MCP                  | -       | Model Context Protocol |
 
 ### 3.2 Frontend
+
 - **Web** : React 18 / Angular 17
 - **Mobile** : Flutter 3.x
 - **Chatbot** : Telegram Bot API + MCP
----
-## API Documentation
 
 ---
+
+## API Documentation
 
 ### Company-Service
 
-**Tech Stack:**  
+**Tech Stack:**
+
 - Spring Boot, Spring Data JPA, H2/MySQL, Lombok, SpringDoc OpenAPI, Eureka Client, Feign Client
 
 **Dependencies:**
+
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -196,6 +198,7 @@ src/main/java/ma/enset/companyservice/
 ```
 
 **Main Endpoints:**
+
 ```http
 POST   /api/companies
 GET    /api/companies
@@ -209,10 +212,12 @@ GET    /api/companies/sector/{sector}
 
 ### Stock-Service
 
-**Tech Stack:**  
+**Tech Stack:**
+
 - Spring Boot, Spring Data JPA, H2/MySQL, Lombok, SpringDoc OpenAPI, Eureka Client, Feign Client, Resilience4J
 
 **Dependencies:**
+
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -246,6 +251,7 @@ GET    /api/companies/sector/{sector}
 ```
 
 **Main Endpoints:**
+
 ```http
 POST   /api/stocks
 GET    /api/stocks
@@ -259,10 +265,12 @@ PUT    /api/stocks/company/{companyId}/update-company-price
 
 ### Chatbot-Service (MCP)
 
-**Tech Stack:**  
+**Tech Stack:**
+
 - Spring Boot, Spring AI MCP, Eureka Client, Feign Client
 
 **Dependencies:**
+
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -283,6 +291,7 @@ PUT    /api/stocks/company/{companyId}/update-company-price
 ```
 
 **Main Endpoints:**
+
 ```http
 POST   /mcp/process
 GET    /mcp/tools
@@ -292,10 +301,12 @@ GET    /mcp/tools
 
 ### Gateway-Service
 
-**Tech Stack:**  
+**Tech Stack:**
+
 - Spring Boot, Spring Cloud Gateway, Eureka Client, Spring Security (prévu), OpenAPI
 
 **Dependencies:**
+
 ```xml
 <dependency>
     <groupId>org.springframework.cloud</groupId>
@@ -315,19 +326,22 @@ GET    /mcp/tools
 </dependency>
 ```
 
-**Main Flow:**  
-- Routes REST `/api/companies/**` → Company-Service  
-- Routes REST `/api/stocks/**` → Stock-Service  
+**Main Flow:**
+
+- Routes REST `/api/companies/**` → Company-Service
+- Routes REST `/api/stocks/**` → Stock-Service
 - JWT propagation (prévu)
 
 ---
 
 ### Discovery-Service (Eureka)
 
-**Tech Stack:**  
+**Tech Stack:**
+
 - Spring Boot, Eureka Server
 
 **Dependencies:**
+
 ```xml
 <dependency>
     <groupId>org.springframework.cloud</groupId>
@@ -335,76 +349,11 @@ GET    /mcp/tools
 </dependency>
 ```
 
-**Main Endpoint:**  
-- Dashboard: [http://localhost:8761](http://localhost:8761)
-
 ---
 
 ### Diagramme de classes
 
-![Diagramme de classes](docs/Uml.png)
-
----
-
-
-
-
----
-
-## Future Roadmap
-
-### Phase 2 - Enhanced Features
-
-- [ ] Responsive design for Mobile
-- [ ] Analytics dashboard
-- [ ] Multi-currency support
-- [ ] AI-powered Chat-Bot
-
-### Phase 3 - Enterprise Features
-
-- [ ] Microservices migration
-- [ ] Kubernetes deployment
-- [ ] Third-party integrations
-
----
-
-<div align="center">
-
-### Star This Project
-
-_If you find this banking platform valuable, please give it a star!_
-
----
-
-**Digital Banking Platform - Modern Banking Solutions**
-
-</div>
-
-=> you gave me a good repport but i want you to make it better style
-
-# Rapport de Projet — Système de Gestion des Cotations Boursières (Microservices Spring Cloud)
-
-Ce document présente la conception, l’implémentation et le déploiement d’un système distribué de gestion d’entreprises et de leurs cotations boursières, basé sur Spring Cloud. Il constitue un support d’entretien technique et un rapport de synthèse.
-
----
-
-## 1. Contexte et objectifs
-
-- Contexte: Architecture microservices Spring Cloud pour gérer des entreprises cotées et leurs cotations.
-- Objectifs:
-  - Architecture robuste et évolutive: Discovery, Gateway, services métiers, tolérance aux pannes.
-  - Communication inter-services (OpenFeign) avec résilience (Resilience4J).
-  - APIs REST + outils MCP pour un agent AI/chatbot.
-  - Infrastructure DevOps (Docker, Compose, Jenkins, Kubernetes) et sécurité (Keycloak/OIDC/JWT) prévue.
-
----
-
-## 2. Périmètre fonctionnel
-
-- Company-Service: CRUD Entreprises (id, name, listingDate, currentStockPrice, sector).
-- Stock-Service: CRUD Cotations (id, date, open/high/low/close, volume, companyId) + mise à jour du prix courant de l’entreprise via la dernière closeValue.
-- Chatbot-Service: Outils MCP exposant les opérations Company/Stock pour un agent AI.
-- Services techniques: Discovery (Eureka) et Gateway (Spring Cloud Gateway).
+![Diagramme de classes](Screen/UML.png)
 
 ---
 
@@ -448,7 +397,6 @@ enset-adria-stock-market-test/
 ```
 
 ---
-
 
 ## 6. Services et API
 
@@ -647,34 +595,7 @@ Sujets d’amélioration:
 - ConfigMaps/Secrets pour Keycloak/DB
 - Observabilité: Prometheus/Grafana
 
----
-
-## 9. Démonstrations (exemples via Gateway)
-
-Lister les entreprises:
-
-```bash
-curl -s http://localhost:8888/api/companies
-```
-
-Créer une entreprise:
-
-```bash
-curl -s -X POST http://localhost:8888/api/companies \
-  -H 'Content-Type: application/json' \
-  -d '{"name":"TestCorp","listingDate":"2024-01-10","currentStockPrice":99.5,"sector":"IT"}'
-```
-
-Créer une cotation et mettre à jour le prix courant:
-
-```bash
-curl -s -X POST http://localhost:8888/api/stocks \
-  -H 'Content-Type: application/json' \
-  -d '{"date":"2025-11-17T12:30:00","openValue":120,"highValue":130,"lowValue":118,"closeValue":127,"volume":7000,"companyId":1}'
-
-curl -s -X PUT http://localhost:8888/api/stocks/company/1/update-company-price
-```
-
+````
 ---
 
 ## 10. Captures & snippets (placeholders)
@@ -693,117 +614,6 @@ Snippets clés (références):
 - `stock-service/web/StockRestController.java`
 - `stock-service/services/StockServiceImpl.java` (Feign + CircuitBreaker)
 - `chatbot-service/tools/McpTools.java` (exposition MCP tools)
-
----
-
-## 11. Bilan et pistes futures
-
-- Réalisé: Architecture microservices, Discovery, Gateway, Company, Stock (Feign + Resilience4J), Chatbot MCP, Docker/Compose, Jenkins, manifests K8s.
-- À finaliser: Sécurité Keycloak/JWT, Frontend React/Angular, Mobile Flutter, Monitoring et traces, Ingress K8s, tests complets (unitaires/intégration/end-to-end).
-
----
-
-## 12. Annexes
-
-- Versions:
-  - Java 17, Spring Boot 3.5.x, Spring Cloud 2025.x
-  - Keycloak 23.x (optionnel)
-- Rappels: Seeds (Company/Stock) activés pour dev (H2). En prod: DB (MySQL/PostgreSQL), migrations (Flyway/Liquibase), données initiales contrôlées.
-
-# Rapport de Projet — Système de Gestion des Cotations Boursières (Microservices Spring Cloud)
-
-Ce document présente la conception, l’implémentation et le déploiement d’un système distribué de gestion d’entreprises et de leurs cotations boursières, basé sur Spring Cloud. Il constitue un support d’entretien technique et un rapport de synthèse.
-
----
-
-## 1. Contexte et objectifs
-
-- Contexte: Architecture microservices Spring Cloud pour gérer des entreprises cotées et leurs cotations.
-- Objectifs:
-  - Architecture robuste et évolutive: Discovery, Gateway, services métiers, tolérance aux pannes.
-  - Communication inter-services (OpenFeign) avec résilience (Resilience4J).
-  - APIs REST + outils MCP pour un agent AI/chatbot.
-  - Infrastructure DevOps (Docker, Compose, Jenkins, Kubernetes) et sécurité (Keycloak/OIDC/JWT) prévue.
-
----
-
-## 2. Périmètre fonctionnel
-
-- Company-Service: CRUD Entreprises (id, name, listingDate, currentStockPrice, sector).
-- Stock-Service: CRUD Cotations (id, date, open/high/low/close, volume, companyId) + mise à jour du prix courant de l’entreprise via la dernière closeValue.
-- Chatbot-Service: Outils MCP exposant les opérations Company/Stock pour un agent AI.
-- Services techniques: Discovery (Eureka) et Gateway (Spring Cloud Gateway).
-
----
-
-## 3. Architecture globale
-
-```mermaid
-flowchart LR
-  subgraph Clients
-    W["Web UI (React/Angular)"]
-    M["Mobile App (Flutter)"]
-    C["Chatbot / MCP Client"]
-  end
-
-  subgraph Edge[API Gateway]
-    G["Spring Cloud Gateway\n(port 8888)"]
-  end
-
-  subgraph Discovery[Service Discovery]
-    E["Eureka Server\n(port 8761)"]
-  end
-
-  subgraph Biz[Business Microservices]
-    CS["company-service\n(port 8081)"]
-    SS["stock-service\n(port 8082)"]
-    CHS["chatbot-service\n(port 8090)"]
-  end
-
-  subgraph Security[Identity Provider]
-    K["Keycloak (OIDC/JWT)"]
-  end
-
-  W -->|REST + JWT| G
-  M -->|REST + JWT| G
-  C -->|MCP HTTP| CHS
-
-  G -->|Service Discovery| E
-  CS -->|Register| E
-  SS -->|Register| E
-  CHS -->|Register| E
-
-  G -->|/api/companies/**| CS
-  G -->|/api/stocks/**| SS
-
-  SS -->|OpenFeign + CB| CS
-
-  G -->|JWT Validation| K
-  CS -->|Resource Server (prévu)| K
-  SS -->|Resource Server (prévu)| K
-  CHS -->|Resource Server (optionnel)| K
-```
-
-Illustration (rendu Mermaid): architecture globale microservices + sécurité.
-
----
-
-## 4. Organisation du dépôt
-
-```text
-enset-adria-stock-market-test/
-├── pom.xml (parent multi-modules)
-├── discovery-service/
-├── gateway-service/
-├── company-service/
-├── stock-service/
-├── chatbot-service/
-├── docker-compose.yml
-├── k8s/ (manifests Kubernetes)
-├── Jenkinsfile
-├── README.md
-└── REPORT.md (ce document)
-```
 
 ---
 
@@ -855,7 +665,7 @@ GET    /api/companies/{id}
 PUT    /api/companies/{id}/price?value=DOUBLE
 DELETE /api/companies/{id}
 GET    /api/companies/sector/{sector}
-```
+````
 
 Exemple payload (création):
 
@@ -936,36 +746,9 @@ Exemple payload (création de cotation):
 
 ## 8. DevOps — Architecture et outillage
 
+![](Screen/DevOps.png)
+
 ### 8.1 Architecture DevOps (vue d’ensemble)
-
-```mermaid
-flowchart LR
-  Dev[(Developer)] --> PR["Git Commit / PR\n(GitHub)"]
-  PR --> CI["Jenkins CI Pipeline"]
-
-  subgraph Build[Build & Test]
-    CI --> MVN["Maven Build\n(unit/integration tests)"]
-    MVN --> IMG["Docker Build\n(one image per service)"]
-  end
-
-  subgraph Registry[Container Registry]
-    IMG --> REG["Docker Registry\n(Docker Hub / Private)"]
-  end
-
-  subgraph EnvDev[Dev Environment]
-    DC["docker-compose\n(local)"]
-  end
-
-  subgraph EnvProd[Prod / Preprod]
-    K8S["Kubernetes Cluster"]
-  end
-
-  REG --> DC
-  REG --> K8S
-
-  CI -->|optionnel: deploy dev| DC
-  CI -->|CD pipeline| K8S
-```
 
 Cette vue montre le cycle complet: code → CI Jenkins → images Docker → exécution via Docker Compose ou Kubernetes.
 
@@ -1031,75 +814,3 @@ kubectl apply -f k8s/stock.yaml
 kubectl apply -f k8s/gateway.yaml
 kubectl apply -f k8s/chatbot.yaml
 ```
-
-Pré-requis: Pousser les images dans un registre accessible au cluster et adapter `image:` si besoin.
-
-Sujets d’amélioration:
-
-- Probes liveness/readiness (Actuator)
-- Ingress au lieu de NodePort
-- ConfigMaps/Secrets pour Keycloak/DB
-- Observabilité: Prometheus/Grafana
-
----
-
-## 9. Démonstrations (exemples via Gateway)
-
-Lister les entreprises:
-
-```bash
-curl -s http://localhost:8888/api/companies
-```
-
-Créer une entreprise:
-
-```bash
-curl -s -X POST http://localhost:8888/api/companies \
-  -H 'Content-Type: application/json' \
-  -d '{"name":"TestCorp","listingDate":"2024-01-10","currentStockPrice":99.5,"sector":"IT"}'
-```
-
-Créer une cotation et mettre à jour le prix courant:
-
-```bash
-curl -s -X POST http://localhost:8888/api/stocks \
-  -H 'Content-Type: application/json' \
-  -d '{"date":"2025-11-17T12:30:00","openValue":120,"highValue":130,"lowValue":118,"closeValue":127,"volume":7000,"companyId":1}'
-
-curl -s -X PUT http://localhost:8888/api/stocks/company/1/update-company-price
-```
-
----
-
-## 10. Captures & snippets (placeholders)
-
-- Schéma global: `docs/architecture.png`
-- Eureka Dashboard: `screenshots/eureka-dashboard.png`
-- Gateway routes: `screenshots/gateway-routes.png`
-- Tests Postman Company: `screenshots/company-postman.png`
-- Tests Postman Stock: `screenshots/stock-postman.png`
-- Console H2 Company: `screenshots/company-h2.png`
-- CI Jenkins: `screenshots/jenkins-pipeline.png`
-
-Snippets clés (références):
-
-- `company-service/web/CompanyRestController.java`
-- `stock-service/web/StockRestController.java`
-- `stock-service/services/StockServiceImpl.java` (Feign + CircuitBreaker)
-- `chatbot-service/tools/McpTools.java` (exposition MCP tools)
-
----
-
-## 11. Bilan et pistes futures
-
-- Réalisé: Architecture microservices, Discovery, Gateway, Company, Stock (Feign + Resilience4J), Chatbot MCP, Docker/Compose, Jenkins, manifests K8s.
-- À finaliser: Sécurité Keycloak/JWT, Frontend React/Angular, Mobile Flutter, Monitoring et traces, Ingress K8s, tests complets (unitaires/intégration/end-to-end).
-
----
-
-## 12. Annexes
-
-- Versions:
-  - Java 17, Spring Boot 3.5.x, Spring Cloud 2025.x
-  - Keycloak 23.x (optionnel)
-- Rappels: Seeds (Company/Stock) activés pour dev (H2). En prod: DB (MySQL/PostgreSQL), migrations (Flyway/Liquibase), données initiales contrôlées.
