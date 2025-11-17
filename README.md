@@ -19,6 +19,10 @@
 
 ---
 
+# Architecture Globale
+
+## ![Architecture Diagram](Screen/Distributed%20Systems.png)
+
 ## 📌 Informations Générales
 
 ### Étudiant(e)
