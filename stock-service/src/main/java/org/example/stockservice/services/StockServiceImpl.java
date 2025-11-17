@@ -75,4 +75,10 @@ public class StockServiceImpl implements StockService {
     public List<StockResponseDTO> findByCompany(Long companyId) {
         return repository.findByCompanyId(companyId).stream().map(StockMapper::toResponse).toList();
     }
+
+    @Override
+    public void updateCompanyCurrentPrice(Long companyId) {
+        repository.findTopByCompanyIdOrderByDateDesc(companyId)
+                .ifPresent(latest -> updateCompanyPriceSafe(companyId, latest.getCloseValue()));
+    }
 }

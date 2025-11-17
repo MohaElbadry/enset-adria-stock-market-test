@@ -56,4 +56,11 @@ public class StockRestController {
     public List<StockResponseDTO> findByCompany(@PathVariable Long companyId) {
         return service.findByCompany(companyId);
     }
+
+    // Calculer et mettre à jour le prix actuel de l’entreprise (à partir de la dernière cotation)
+    @PutMapping("/company/{companyId}/update-company-price")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateCompanyPrice(@PathVariable Long companyId) {
+        service.updateCompanyCurrentPrice(companyId);
+    }
 }

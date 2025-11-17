@@ -11,4 +11,5 @@ public interface StockService {
     StockResponseDTO findById(Long id);
     void delete(Long id);
     List<StockResponseDTO> findByCompany(Long companyId);
+    void updateCompanyCurrentPrice(Long companyId);
 }
