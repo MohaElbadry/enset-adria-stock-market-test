@@ -595,7 +595,6 @@ Sujets d’amélioration:
 - ConfigMaps/Secrets pour Keycloak/DB
 - Observabilité: Prometheus/Grafana
 
-````
 ---
 
 ## 10. Captures & snippets (placeholders)
@@ -665,7 +664,7 @@ GET    /api/companies/{id}
 PUT    /api/companies/{id}/price?value=DOUBLE
 DELETE /api/companies/{id}
 GET    /api/companies/sector/{sector}
-````
+```
 
 Exemple payload (création):
 
@@ -746,7 +745,7 @@ Exemple payload (création de cotation):
 
 ## 8. DevOps — Architecture et outillage
 
-![](Screen/DevOps.png)
+![df](Screen/DevOps-piplines.png)
 
 ### 8.1 Architecture DevOps (vue d’ensemble)
 
