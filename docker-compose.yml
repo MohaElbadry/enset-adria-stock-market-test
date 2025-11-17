@@ -1,0 +1,90 @@
+version: "3.9"
+services:
+  discovery-service:
+    build: ./discovery-service
+    image: enset/discovery-service:latest
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+    networks:
+      - stock-market-net
+
+  gateway-service:
+    build: ./gateway-service
+    image: enset/gateway-service:latest
+    container_name: gateway-service
+    depends_on:
+      - discovery-service
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
+      - SPRING_CLOUD_CONFIG_ENABLED=false
+    ports:
+      - "8888:8888"
+    networks:
+      - stock-market-net
+
+  company-service:
+    build: ./company-service
+    image: enset/company-service:latest
+    container_name: company-service
+    depends_on:
+      - discovery-service
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
+      - SPRING_CLOUD_CONFIG_ENABLED=false
+    ports:
+      - "8081:8081"
+    networks:
+      - stock-market-net
+
+  stock-service:
+    build: ./stock-service
+    image: enset/stock-service:latest
+    container_name: stock-service
+    depends_on:
+      - discovery-service
+      - company-service
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
+      - SPRING_CLOUD_CONFIG_ENABLED=false
+    ports:
+      - "8082:8082"
+    networks:
+      - stock-market-net
+
+  chatbot-service:
+    build: ./chatbot-service
+    image: enset/chatbot-service:latest
+    container_name: chatbot-service
+    depends_on:
+      - discovery-service
+      - company-service
+      - stock-service
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
+      - SPRING_CLOUD_CONFIG_ENABLED=false
+    ports:
+      - "8090:8090"
+    networks:
+      - stock-market-net
+
+  # Optional: Keycloak for security setup (dev only)
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0
+    container_name: keycloak
+    command: start-dev
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "8080:8080"
+    networks:
+      - stock-market-net
+
+networks:
+  stock-market-net:
+    driver: bridge

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stock-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stock-service
+  template:
+    metadata:
+      labels:
+        app: stock-service
+    spec:
+      containers:
+        - name: stock-service
+          image: enset/stock-service:latest
+          env:
+            - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+              value: http://discovery-service:8761/eureka
+            - name: SPRING_CLOUD_CONFIG_ENABLED
+              value: "false"
+          ports:
+            - containerPort: 8082
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stock-service
+spec:
+  type: ClusterIP
+  selector:
+    app: stock-service
+  ports:
+    - port: 8082
+      targetPort: 8082
